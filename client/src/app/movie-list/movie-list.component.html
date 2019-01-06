@@ -1,3 +1,25 @@
-<p>
-  movie-list works!
-</p>
+<h2>Vos films</h2>
+<button class="btn btn-primary" (click)="onNewMovie()">Nouveau film</button>
+
+<table class="table table-striped" *ngIf="movies!== undefined && movies.length > 0" >
+  <thead>
+    <tr>
+      <th>Titre</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let movie of movies; let i = index;"
+    (click)="onViewMovie(i)">
+      <td>{{ movie.title }}</td>
+      <td>{{ movie.description }}</td>
+      <td>
+        <button class="btn btn-default pull-right" (click)="onDeleteMovie(movie)">
+          <span class="glyphicon glyphicon-delete"></span>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
