@@ -9,7 +9,7 @@ import { HeaderComponent } from './header/header.component';
 import { MovieListComponent } from './movie-list/movie-list.component';
 import { SingleMovieComponent } from './movie-list/single-movie/single-movie.component';
 import { MovieFormComponent } from './movie-list/movie-form/movie-form.component';
-import { MoviesService } from './movies.service';
+import { MoviesService } from './services/movies.service';
 
 const appRoutes: Routes = [
   { path: 'movies', component: MovieListComponent},
