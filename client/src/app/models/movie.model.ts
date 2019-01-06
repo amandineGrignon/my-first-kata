@@ -1,7 +1,8 @@
 export class Movie {
-  id: number;
+  id: number = null;
+  title = '';
+  description = '';
 
-  constructor(public title: string, public description: string) {
-
+  constructor(title: string, description: string) {
   }
 }
