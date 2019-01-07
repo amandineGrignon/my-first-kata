@@ -47,7 +47,7 @@ export class MovieFormComponent implements OnInit {
     try {
       this.moviesService.createNewMovie(newMovie)
         .then(data => {
-           console.log('Création du film réussie: ' + data);
+           console.log('Création du film réussie');
 
            // Redirection
            this.router.navigate(['/movies']);

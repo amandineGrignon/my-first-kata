@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Movie } from './../models/movie.model';
 import { HttpClient } from '@angular/common/http';
 import { Headers } from '@angular/http';
+import { environment } from './../../environments/environment';
 
 @Injectable()
 export class MoviesService {
@@ -9,7 +10,7 @@ export class MoviesService {
   private headers = new Headers( { 'Content-Type': 'application/json' } );
   movies: Movie[] = [];
 
-  baseUrl = 'http://localhost:8080/api';
+  baseUrl = environment.urlServeur + '/api';
 
   constructor(private http: HttpClient) { }
 
