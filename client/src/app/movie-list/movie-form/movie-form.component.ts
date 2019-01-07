@@ -29,18 +29,34 @@ export class MovieFormComponent implements OnInit {
     });
   }
 
+  get title() { return this.movieForm.get('title'); }
+  get description() { return this.movieForm.get('description'); }
+
   onSaveMovie() {
     // Récupération des valeurs du formulaire
     const title = this.movieForm.get('title').value;
     const description = this.movieForm.get('description').value;
 
+    console.log('createNewMovie Form title = ' + title + ', ' + description);
+
     // Création du nouveau film
     const newMovie = new Movie(title, description);
-    console.log('newMovie = ' + newMovie);
+    console.log('createNewMovie newMovie = ' + newMovie.title + ', ' + newMovie.description);
 
-    this.moviesService.createNewMovie(newMovie);
+    this.createMovie(newMovie);
+  }
 
-    // Redirection
-    this.router.navigate(['/movies']);
+  createMovie(newMovie: Movie) {
+    try {
+      this.moviesService.createNewMovie(newMovie)
+        .then(data => {
+           console.log('Création du film réussie: ' + data);
+
+           // Redirection
+           this.router.navigate(['/movies']);
+        });
+    } catch (e) {
+      console.log(e, 'Exception lors de la création du film');
+    }
   }
 }
