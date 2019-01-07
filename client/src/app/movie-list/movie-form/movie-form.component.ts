@@ -13,6 +13,20 @@ export class MovieFormComponent implements OnInit {
 
   movieForm: FormGroup;
 
+  formErrors = {
+    'title': '',
+    'description': ''
+  };
+
+  validationMessages = {
+    'title': {
+      'required': 'Le titre est obligatoire.',
+    },
+    'description': {
+      'maxlength': 'La description doit contenir au maximum 250 caractères.'
+    }
+   };
+
   constructor(private formBuilder: FormBuilder,
               private moviesService: MoviesService,
               private router: Router) { }
@@ -25,32 +39,54 @@ export class MovieFormComponent implements OnInit {
     // Initialisation du formulaire et des règles
     this.movieForm = this.formBuilder.group( {
       title: ['', Validators.required],
-      description: ['', Validators.required]
+      description: ['', Validators.maxLength(250)]
     });
+
+    this.movieForm.valueChanges.subscribe(data => this.onValueChanged(data));
+    this.onValueChanged();
+  }
+
+  onValueChanged(data?: any) {
+    if (!this.movieForm) {
+      return;
+    }
+
+    for (const field of Object.keys(this.formErrors)) {
+      // Supprime les anciens messages d'erreurs
+      this.formErrors[field] = '';
+      const control = this.movieForm.get(field);
+
+      if (control && control.dirty && !control.valid) {
+        const messages = this.validationMessages[field];
+        for (const key of Object.keys(control.errors)) {
+          this.formErrors[field] += messages[key] + ' ';
+        }
+      }
+    }
   }
 
   get title() { return this.movieForm.get('title'); }
   get description() { return this.movieForm.get('description'); }
 
   onSaveMovie() {
-    // Récupération des valeurs du formulaire
-    const title = this.movieForm.get('title').value;
-    const description = this.movieForm.get('description').value;
+    if (this.movieForm.valid) {
+      // Récupération des valeurs du formulaire
+      const title = this.movieForm.get('title').value;
+      const description = this.movieForm.get('description').value;
+      console.log('createNewMovie Form title = ' + title + ', ' + description);
 
-    console.log('createNewMovie Form title = ' + title + ', ' + description);
+      // Création du nouveau film
+      const newMovie = new Movie(title, description);
 
-    // Création du nouveau film
-    const newMovie = new Movie(title, description);
-    console.log('createNewMovie newMovie = ' + newMovie.title + ', ' + newMovie.description);
-
-    this.createMovie(newMovie);
+      this.createMovie(newMovie);
+    }
   }
 
   createMovie(newMovie: Movie) {
     try {
       this.moviesService.createNewMovie(newMovie)
         .then(data => {
-           console.log('Création du film réussie: ' + data);
+           console.log('Création du film réussie');
 
            // Redirection
            this.router.navigate(['/movies']);
