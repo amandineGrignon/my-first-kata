@@ -19,6 +19,7 @@ public class Movie implements Serializable {
     private Long id;
 
     @NotNull
+    @Length(min = 2, max = 250)
     private String title;
 
     @Length(max = 250)

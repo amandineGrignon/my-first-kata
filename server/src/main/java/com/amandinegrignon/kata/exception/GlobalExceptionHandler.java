@@ -25,6 +25,14 @@ public class GlobalExceptionHandler {
     /** Provides handling for exceptions throughout this service. */
     @ExceptionHandler({ DatabaseException.class })
     public final ResponseEntity<Void> handleDatabaseException(Exception ex, WebRequest request) {
+        LOGGER.error("Erreur dans la base de données.", ex);
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /** Provides handling for exceptions throughout this service. */
+    @ExceptionHandler({ InvalidObjectException.class })
+    public final ResponseEntity<Void> handleInvalidObjectException(Exception ex, WebRequest request) {
+        LOGGER.error("L'élément est invalide.", ex);
+        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 }
