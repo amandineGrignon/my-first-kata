@@ -24,7 +24,7 @@ public class MovieControllerTest {
     @Before
     public void setBaseUri() {
         RestAssured.port = 8080;
-        RestAssured.baseURI = "http://localhost";
+        RestAssured.baseURI = "http://localhost/api";
     }
 
     @Test

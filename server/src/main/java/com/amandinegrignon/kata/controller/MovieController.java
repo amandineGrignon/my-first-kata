@@ -13,8 +13,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@CrossOrigin
-@RequestMapping("/movies")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@RequestMapping("/api/movies")
 public class MovieController {
 
     @Autowired
