@@ -38,9 +38,16 @@ export class MovieListComponent implements OnInit {
     this.router.navigate(['movies', 'new']);
   }
 
-  onDeleteMovie(id: number) {
-    this.displaySpinner = true;
+  onDeleteMovie(movie: Movie) {
+    if (movie !== undefined && confirm('Voulez-vous supprimer le film ' + movie.title + ' ?')) {
+      this.deleteMovie(movie.id);
+    }
+  }
+
+  deleteMovie(id: number) {
     try {
+      this.displaySpinner = true;
+
       this.moviesService.removeMovie(id)
         .then(data => {
           this.displaySpinner = false;

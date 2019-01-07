@@ -1,9 +1,8 @@
-<h2>Vos films</h2>
-<button class="btn btn-primary pull-right" (click)="onNewMovie()">Nouveau film</button>
+<h2>Vos films <button class="btn btn-primary pull-right" (click)="onNewMovie()">Nouveau film</button></h2>
 
 <img *ngIf="displaySpinner" class="spinner" src="../../assets/img/spinner.gif">
 
-<table class="table table-striped" *ngIf="movies!== undefined && movies.length > 0" >
+<table class="table table-striped" *ngIf="movies && movies.length > 0" >
   <thead>
     <tr>
       <th>Titre</th>
@@ -12,17 +11,20 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let movie of movies; let i = index;"
-    (click)="onViewMovie(i)">
+    <tr *ngFor="let movie of movies; let i = index;">
       <td>{{ movie.title }}</td>
       <td>{{ movie.description }}</td>
       <td>
-        <button class="btn btn-primary pull-right" (click)="onDeleteMovie(movie)">
-          <span class="glyphicon glyphicon-delete"></span>
+        <button class="btn btn-info" (click)="onViewMovie(movie.id)">
+            <span class="glyphicon glyphicon-eye-open"></span>
+        </button>
+
+        <button class="btn btn btn-danger" (click)="onDeleteMovie(movie)">
+          <span class="glyphicon glyphicon-remove"></span>
         </button>
       </td>
     </tr>
   </tbody>
 </table>
 
-
+<div *ngIf="movies.length === 0">Aucun film</div>
