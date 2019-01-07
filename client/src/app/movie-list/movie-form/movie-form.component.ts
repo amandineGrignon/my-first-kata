@@ -21,6 +21,8 @@ export class MovieFormComponent implements OnInit {
   validationMessages = {
     'title': {
       'required': 'Le titre est obligatoire.',
+      'minlength': 'Le titre doit contenir au minimum 2 caractères',
+      'maxlength': 'Le titre doit contenir au maximum 250 caractères.'
     },
     'description': {
       'maxlength': 'La description doit contenir au maximum 250 caractères.'
@@ -38,7 +40,7 @@ export class MovieFormComponent implements OnInit {
   initForm() {
     // Initialisation du formulaire et des règles
     this.movieForm = this.formBuilder.group( {
-      title: ['', Validators.required],
+      title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(250)]],
       description: ['', Validators.maxLength(250)]
     });
 
