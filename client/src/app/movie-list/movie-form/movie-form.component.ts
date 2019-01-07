@@ -37,11 +37,8 @@ export class MovieFormComponent implements OnInit {
     const title = this.movieForm.get('title').value;
     const description = this.movieForm.get('description').value;
 
-    console.log('createNewMovie Form title = ' + title + ', ' + description);
-
     // Création du nouveau film
     const newMovie = new Movie(title, description);
-    console.log('createNewMovie newMovie = ' + newMovie.title + ', ' + newMovie.description);
 
     this.createMovie(newMovie);
   }

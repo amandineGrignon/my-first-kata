@@ -24,7 +24,6 @@ export class SingleMovieComponent implements OnInit {
 
     // Récupération de l'id dans la route
     const id = this.route.snapshot.params['id'];
-    console.log('id movie: ' + id);
 
     // Récupération du film depuis le serveur
     this.getMovie(id);
