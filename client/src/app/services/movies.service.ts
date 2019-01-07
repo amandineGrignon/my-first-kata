@@ -9,7 +9,7 @@ export class MoviesService {
   private headers = new Headers( { 'Content-Type': 'application/json' } );
   movies: Movie[] = [];
 
-  baseUrl = 'http://localhost:8080';
+  baseUrl = 'http://localhost:8080/api';
 
   constructor(private http: HttpClient) { }
 
