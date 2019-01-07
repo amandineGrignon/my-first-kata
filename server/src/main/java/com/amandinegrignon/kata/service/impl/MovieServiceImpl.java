@@ -1,5 +1,7 @@
 package com.amandinegrignon.kata.service.impl;
 
+import com.amandinegrignon.kata.dto.FactoryDto;
+import com.amandinegrignon.kata.dto.MovieDto;
 import com.amandinegrignon.kata.exception.DatabaseException;
 import com.amandinegrignon.kata.exception.ResourceNotFoundException;
 import com.amandinegrignon.kata.model.Movie;
@@ -10,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -25,21 +29,55 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<Movie> getMovies() {
-        return movieRepository.findAll();
+    public List<MovieDto> getMovies() {
+        List<Movie> movies = movieRepository.findAll();
+
+        if (movies != null && !movies.isEmpty())
+        {
+            // Convertir en DTO
+            return movies.stream().map(m -> FactoryDto.convertToDto(m)).collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
     }
 
     @Override
-    public Movie findOne(Long id) throws ResourceNotFoundException {
+    public MovieDto findOne(Long id) throws ResourceNotFoundException {
         Optional<Movie> movieOptional = movieRepository.findById(id);
 
-        String msg = MessageFormat.format("Le film avec l''id {0} est introuvable.", id);
-        return movieOptional.orElseThrow(() -> new ResourceNotFoundException(msg));
+        if (movieOptional.isPresent()) {
+            return FactoryDto.convertToDto(movieOptional.get());
+        } else {
+            String msg = MessageFormat.format("Le film avec l''id {0} est introuvable.", id);
+            throw new ResourceNotFoundException(msg);
+        }
     }
 
     @Override
-    public Movie save(Movie movie) {
-        return movieRepository.save(movie);
+    public MovieDto save(MovieDto movieDto) {
+        Movie movie = null;
+        boolean isExist = false;
+
+        if (movieDto.getId() != null) {
+            Optional<Movie> movieOptional = movieRepository.findById(movieDto.getId());
+
+            // Modifier
+            if (movieOptional.isPresent()) {
+                isExist = true;
+                movie = movieOptional.get();
+            }
+        }
+
+        if (!isExist) {
+            // Créer
+            movie = new Movie();
+        }
+
+        movie.setTitle(movieDto.getTitle());
+        movie.setDescription(movieDto.getDescription());
+
+        movie = movieRepository.save(movie);
+        return FactoryDto.convertToDto(movie);
     }
 
     @Override
