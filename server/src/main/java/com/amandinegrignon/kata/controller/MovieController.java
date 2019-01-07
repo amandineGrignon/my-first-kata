@@ -1,10 +1,15 @@
 package com.amandinegrignon.kata.controller;
 
 import com.amandinegrignon.kata.dto.MovieDto;
+import com.amandinegrignon.kata.exception.InvalidObjectException;
 import com.amandinegrignon.kata.service.MovieService;
+import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -43,8 +48,12 @@ public class MovieController {
      * @return
      */
     @PostMapping({"", "/"})
-    public MovieDto save(@RequestBody MovieDto movieDto) {
-        return movieService.save(movieDto);
+    public MovieDto save(@Valid @RequestBody MovieDto movieDto, BindingResult result) {
+        if (!result.hasErrors()) {
+            return movieService.save(movieDto);
+        } else {
+            throw new InvalidObjectException(result.getAllErrors().toString());
+        }
     }
 
     /**
