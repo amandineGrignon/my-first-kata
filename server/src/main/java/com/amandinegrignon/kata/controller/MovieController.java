@@ -1,6 +1,6 @@
 package com.amandinegrignon.kata.controller;
 
-import com.amandinegrignon.kata.model.Movie;
+import com.amandinegrignon.kata.dto.MovieDto;
 import com.amandinegrignon.kata.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ public class MovieController {
      * @return List<Movie>
      */
     @GetMapping({"", "/"})
-    public List<Movie> getMovies() {
+    public List<MovieDto> getMovies() {
         return movieService.getMovies();
     }
 
@@ -32,19 +32,19 @@ public class MovieController {
      * @return Movie
      */
     @GetMapping("/{id}")
-    public Movie getMovie(@PathVariable Long id) {
+    public MovieDto getMovie(@PathVariable Long id) {
         return movieService.findOne(id);
     }
 
     /**
      * Créer un film
      *
-     * @param movie
+     * @param movieDto
      * @return
      */
     @PostMapping({"", "/"})
-    public Movie save(@RequestBody Movie movie) {
-        return movieService.save(movie);
+    public MovieDto save(@RequestBody MovieDto movieDto) {
+        return movieService.save(movieDto);
     }
 
     /**
