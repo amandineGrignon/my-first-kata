@@ -1,11 +1,14 @@
 <h2>Vos films</h2>
-<button class="btn btn-primary" (click)="onNewMovie()">Nouveau film</button>
+<button class="btn btn-primary pull-right" (click)="onNewMovie()">Nouveau film</button>
+
+<img *ngIf="displaySpinner" class="spinner" src="../../assets/img/spinner.gif">
 
 <table class="table table-striped" *ngIf="movies!== undefined && movies.length > 0" >
   <thead>
     <tr>
       <th>Titre</th>
       <th>Description</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -14,7 +17,7 @@
       <td>{{ movie.title }}</td>
       <td>{{ movie.description }}</td>
       <td>
-        <button class="btn btn-default pull-right" (click)="onDeleteMovie(movie)">
+        <button class="btn btn-primary pull-right" (click)="onDeleteMovie(movie)">
           <span class="glyphicon glyphicon-delete"></span>
         </button>
       </td>

@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
 import { Movie } from './../models/movie.model';
 import { MoviesService } from '../services/movies.service';
 import { Router } from '@angular/router';
@@ -9,23 +8,29 @@ import { Router } from '@angular/router';
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss']
 })
-export class MovieListComponent implements OnInit, OnDestroy {
+export class MovieListComponent implements OnInit {
 
-  movies: Movie[];
-  movieSubscription: Subscription;
+  displaySpinner = false;
+  movies: any = [];
 
-  constructor(private moviesService: MoviesService, private router: Router) { }
+  constructor(private moviesService: MoviesService,
+              private router: Router) { }
 
   ngOnInit() {
-    this.movieSubscription = this.moviesService.movieSubject.subscribe(
-        (movies: Movie[]) => {
-          this.movies = movies;
-        }
-    );
+    this.displaySpinner = true;
+    this.getMovies();
+  }
 
-    // Afficher la liste de films
-    this.moviesService.getMovies();
-    this.moviesService.emitMovies();
+  getMovies() {
+    try {
+      this.moviesService.getMovies().then(data => {
+        this.displaySpinner = false;
+        console.log('Succès lors de la récupération des films');
+        this.movies = data;
+      });
+    } catch (e) {
+      console.log(e, 'Exception lors de la récupération des films');
+    }
   }
 
   // Redirection vers la route de création de film
@@ -33,15 +38,24 @@ export class MovieListComponent implements OnInit, OnDestroy {
     this.router.navigate(['movies', 'new']);
   }
 
-  onDeleteMovie(movie: Movie) {
-    this.moviesService.removeMovie(movie);
+  onDeleteMovie(id: number) {
+    this.displaySpinner = true;
+    try {
+      this.moviesService.removeMovie(id)
+        .then(data => {
+          this.displaySpinner = false;
+          console.log(data, 'Succès lors de la suppression du film');
+
+          const index = this.movies.indexOf(data);
+          this.movies.splice(index, 1);
+        });
+    } catch (e) {
+      this.displaySpinner = false;
+      console.log(e, 'Exception lors de la suppression du film');
+    }
   }
 
   onViewMovie(id: number) {
     this.router.navigate(['/movies', 'view', id]);
-  }
-
-  ngOnDestroy() {
-    this.movieSubscription.unsubscribe();
   }
 }
