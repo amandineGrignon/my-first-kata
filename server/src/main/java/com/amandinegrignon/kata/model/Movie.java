@@ -27,11 +27,11 @@ public class Movie implements Serializable {
     public Movie() {
     }
 
-    public Movie(@NotNull String title) {
+    public Movie(String title) {
         this.title = title;
     }
 
-    public Movie(@NotNull String title, @Length(max = 200) String description) {
+    public Movie(String title, String description) {
         this.title = title;
         this.description = description;
     }
