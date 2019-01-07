@@ -1,7 +1,6 @@
 package com.amandinegrignon.kata.controller;
 
 import com.amandinegrignon.kata.dto.MovieDto;
-import com.amandinegrignon.kata.model.Movie;
 import com.amandinegrignon.kata.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
