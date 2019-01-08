@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin //(origins = "http://localhost:4200", maxAge = 3600)
 @RequestMapping("/api/movies")
 public class MovieController {
 

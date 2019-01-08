@@ -10,6 +10,9 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -17,21 +20,22 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static io.restassured.RestAssured.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@PropertySource("test:application.properties")
+//@PropertySource("test:application.properties")
+@PropertySource("classpath:application-test.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class MovieControllerTest {
 
     @Before
     public void setBaseUri() {
         RestAssured.port = 8080;
-        RestAssured.baseURI = "http://localhost/api";
+        RestAssured.baseURI = "http://localhost";
     }
 
     @Test
     @Sql("classpath:sql/Test_GetMovies_Empty.sql")
     public void testGetMovies_Aucun() {
         //@formatter:off
-        get("/movies")
+        get("/api/movies")
         .then()
                 .statusCode(HttpStatus.OK.value())
         .body("isEmpty()", Matchers.is(true))
@@ -43,7 +47,7 @@ public class MovieControllerTest {
     @Sql("classpath:sql/Test_GetMovies.sql")
     public void testGetMovies_Plusieurs() {
         //@formatter:off
-        get("/movies")
+        get("/api/movies")
         .then()
                 .statusCode(HttpStatus.OK.value())
         .body("$", Matchers.hasSize(3))
@@ -57,9 +61,9 @@ public class MovieControllerTest {
         String idNoExist = "999";
 
         //@formatter:off
-        get("/movies/" + idNoExist)
+        get("/api/movies/" + idNoExist)
         .then()
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
         ;
         //@formatter:on
     }
@@ -70,7 +74,7 @@ public class MovieControllerTest {
         String id = "1";
 
         //@formatter:off
-        get("/movies/" + id)
+        get("/api/movies/" + id)
         .then()
                 .statusCode(HttpStatus.OK.value())
         .assertThat()
@@ -87,14 +91,17 @@ public class MovieControllerTest {
         Movie movie = new Movie();
         movie.setTitle("Thor");
         movie.setDescription("Sorti en 2011, le film suit les aventures de Thor, fils d’Odin, dépouillé de ses pouvoirs et exilé sur terre ...");
-        movie.setDescription("Sorti en 2011, le film suit les aventures de Thor, fils d’Odin, dépouillé de ses pouvoirs et exilé sur terre ...");
 
         //@formatter:off
         with().body(movie)
                 .contentType(ContentType.JSON)
-        .post("")
+        .post("/api")
         .then()
                 .statusCode(HttpStatus.OK.value())
+        .assertThat()
+              .body("id", equalTo(4))
+              .body("title", equalTo("Thor"))
+              .body("description", equalTo("Sorti en 2011, le film suit les aventures de Thor, fils d’Odin, dépouillé de ses pouvoirs et exilé sur terre ..."))
         ;
         //@formatter:on
     }
@@ -105,7 +112,7 @@ public class MovieControllerTest {
         String id = "3";
 
         //@formatter:off
-        delete("/" + id)
+        delete("/api/" + id)
         .then()
                 .statusCode(HttpStatus.OK.value())
         ;
@@ -118,9 +125,9 @@ public class MovieControllerTest {
         String id = "999";
 
         //@formatter:off
-        delete("/" + id)
+        delete("/api/" + id)
         .then()
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
         ;
         //@formatter:on
     }
