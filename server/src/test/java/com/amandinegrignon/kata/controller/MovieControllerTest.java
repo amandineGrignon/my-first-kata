@@ -10,9 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -20,7 +17,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static io.restassured.RestAssured.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@PropertySource("test:application.properties")
 @PropertySource("classpath:application-test.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class MovieControllerTest {
@@ -32,8 +28,8 @@ public class MovieControllerTest {
     }
 
     @Test
-    @Sql("classpath:sql/Test_GetMovies_Empty.sql")
-    public void testGetMovies_Aucun() {
+    @Sql("classpath:sql/Test_movies_empty.sql")
+    public void testGetMovies_Empty() {
         //@formatter:off
         get("/api/movies")
         .then()
@@ -44,8 +40,8 @@ public class MovieControllerTest {
     }
 
     @Test
-    @Sql("classpath:sql/Test_GetMovies.sql")
-    public void testGetMovies_Plusieurs() {
+    @Sql("classpath:sql/Test_movies.sql")
+    public void testGetMovies_SeveralResults() {
         //@formatter:off
         get("/api/movies")
         .then()
@@ -56,7 +52,7 @@ public class MovieControllerTest {
     }
 
     @Test
-    @Sql("classpath:sql/Test_GetMovies.sql")
+    @Sql("classpath:sql/Test_movies.sql")
     public void testGetMovie_ResourceNotFound() {
         String idNoExist = "999";
 
@@ -69,8 +65,8 @@ public class MovieControllerTest {
     }
 
     @Test
-    @Sql("classpath:sql/Test_GetMovies.sql")
-    public void testGetMovie_Succes() {
+    @Sql("classpath:sql/Test_movies.sql")
+    public void testGetMovie_Success() {
         String id = "1";
 
         //@formatter:off
@@ -86,8 +82,8 @@ public class MovieControllerTest {
     }
 
     @Test
-    @Sql("classpath:sql/Test_GetMovies.sql")
-    public void testSaveMovie_Succes() {
+    @Sql("classpath:sql/Test_movies.sql")
+    public void testSaveMovie_Success() {
         Movie movie = new Movie();
         movie.setTitle("Thor");
         movie.setDescription("Sorti en 2011, le film suit les aventures de Thor, fils d’Odin, dépouillé de ses pouvoirs et exilé sur terre ...");
@@ -100,15 +96,15 @@ public class MovieControllerTest {
                 .statusCode(HttpStatus.OK.value())
         .assertThat()
               .body("id", equalTo(4))
-              .body("title", equalTo("Thor"))
-              .body("description", equalTo("Sorti en 2011, le film suit les aventures de Thor, fils d’Odin, dépouillé de ses pouvoirs et exilé sur terre ..."))
+              .body("title", equalTo(movie.getTitle()))
+              .body("description", equalTo(movie.getDescription()))
         ;
         //@formatter:on
     }
 
     @Test
-    @Sql("classpath:sql/Test_GetMovies.sql")
-    public void testDeleteMovie_Succes() {
+    @Sql("classpath:sql/Test_movies.sql")
+    public void testDeleteMovie_Success() {
         String id = "3";
 
         //@formatter:off
@@ -120,7 +116,7 @@ public class MovieControllerTest {
     }
 
     @Test
-    @Sql("classpath:sql/Test_GetMovies.sql")
+    @Sql("classpath:sql/Test_movies.sql")
     public void testDeleteMovie_ResourceNotFound() {
         String id = "999";
 
